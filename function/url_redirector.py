@@ -41,18 +41,6 @@ def shorten_url():
 
         urls = load_urls()
 
-<<<<<<< HEAD:function/url_redirector.py
-    # Generate a unique short code (for demo purposes, hardcoded to "abc123")
-    short_code = "abc123"  # You should generate a real unique code here
-    
-    # Store the mapping in memory (and save it to the file)
-    urls[short_code] = original_url
-    save_urls(urls)
-
-    short_url = f"https://<your_netlify_subdomain>.netlify.app/{short_code}"
-
-    return jsonify({"short_url": short_url})
-=======
         # Generate a unique short code (for demo purposes, hardcoded to "abc123")
         short_code = "abc123"  # You should generate a real unique code here
         
@@ -60,13 +48,13 @@ def shorten_url():
         urls[short_code] = original_url
         save_urls(urls)
 
-        short_url = f"http://127.0.0.1:5000/{short_code}"
+        # Update the URL to point to your Netlify URL (or other appropriate domain)
+        short_url = f"https://your-netlify-subdomain.netlify.app/{short_code}"
 
         return jsonify({"short_url": short_url})
     except Exception as e:
         print(f"Error in /shorten route: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
->>>>>>> dc3b782b1b4a7064da1694bf2bec0501a0f0e567:url_redirector.py
 
 # URL Redirect Route (GET)
 @app.route('/<short_code>', methods=['GET'])
