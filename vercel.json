@@ -8,6 +8,10 @@
   ],
   "routes": [
     {
+      "src": "/shorten",
+      "dest": "url_redirector.py"
+    },
+    {
       "src": "/(.*)",
       "dest": "url_redirector.py"
     }
