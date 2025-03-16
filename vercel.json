@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/url_redirector.py"
+      "dest": "url_redirector.py"
     }
   ]
 }
