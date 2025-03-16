@@ -4,56 +4,78 @@ import os
 
 app = Flask(__name__)
 
+# File to store the shortened URLs
 URL_FILE = 'urls.json'
 
-# Function to load the URLs from the JSON file
+# Load the URLs from the JSON file
 def load_urls():
     try:
         if os.path.exists(URL_FILE):
             with open(URL_FILE, 'r') as file:
                 return json.load(file)
+        return {}  # If no file exists, return an empty dictionary
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON from {URL_FILE}: {e}")
         return {}
     except Exception as e:
-        print(f"Error loading URLs: {e}")
+        print(f"Unexpected error loading {URL_FILE}: {e}")
         return {}
 
-# Function to save the URLs to the JSON file
+# Save the URLs to the JSON file
 def save_urls(urls):
     try:
         with open(URL_FILE, 'w') as file:
             json.dump(urls, file, indent=4)
     except Exception as e:
-        print(f"Error saving URLs: {e}")
+        print(f"Error saving URLs to {URL_FILE}: {e}")
 
+# Homepage Route
 @app.route('/')
 def home():
     return "Welcome to the URL Redirector API!", 200
 
+# URL Shortening Route (POST)
 @app.route('/shorten', methods=['POST'])
 def shorten_url():
-    data = request.get_json()
-    original_url = data.get("original_url")
-    if not original_url:
-        return jsonify({"error": "Missing original_url"}), 400
+    try:
+        data = request.get_json()
+        original_url = data.get("original_url")
 
-    urls = load_urls()
-    short_code = "abc123"  # Hardcoded for simplicity
+        if not original_url:
+            return jsonify({"error": "Missing original_url"}), 400
 
-    urls[short_code] = original_url
-    save_urls(urls)
+        urls = load_urls()
 
-    short_url = f"http://127.0.0.1:5000/{short_code}"
-    return jsonify({"short_url": short_url})
+        # Generate a unique short code (for demo purposes, hardcoded to "abc123")
+        short_code = "abc123"  # You should generate a real unique code here
+        
+        # Store the mapping in memory (and save it to the file)
+        urls[short_code] = original_url
+        save_urls(urls)
 
+        short_url = f"http://127.0.0.1:5000/{short_code}"
+
+        return jsonify({"short_url": short_url})
+    except Exception as e:
+        print(f"Error in /shorten route: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+
+# URL Redirect Route (GET)
 @app.route('/<short_code>', methods=['GET'])
 def redirect_url(short_code):
-    urls = load_urls()
-    original_url = urls.get(short_code)
+    try:
+        urls = load_urls()
 
-    if original_url:
-        return redirect(original_url)
-    else:
-        return "Short URL not found!", 404
+        # Find the original URL from the shortened URL
+        original_url = urls.get(short_code)
+
+        if original_url:
+            return redirect(original_url)
+        else:
+            return "Short URL not found!", 404
+    except Exception as e:
+        print(f"Error in /{short_code} route: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
