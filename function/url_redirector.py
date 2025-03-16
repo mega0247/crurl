@@ -9,27 +9,39 @@ URL_FILE = 'urls.json'
 
 # Load the URLs from the JSON file
 def load_urls():
-    if os.path.exists(URL_FILE):
-        with open(URL_FILE, 'r') as file:
-            return json.load(file)
-    return {}
+    try:
+        if os.path.exists(URL_FILE):
+            with open(URL_FILE, 'r') as file:
+                return json.load(file)
+        return {}  # If no file exists, return an empty dictionary
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON from {URL_FILE}: {e}")
+        return {}
+    except Exception as e:
+        print(f"Unexpected error loading {URL_FILE}: {e}")
+        return {}
 
 # Save the URLs to the JSON file
 def save_urls(urls):
-    with open(URL_FILE, 'w') as file:
-        json.dump(urls, file, indent=4)
+    try:
+        with open(URL_FILE, 'w') as file:
+            json.dump(urls, file, indent=4)
+    except Exception as e:
+        print(f"Error saving URLs to {URL_FILE}: {e}")
 
 # URL Shortening Route (POST)
 @app.route('/shorten', methods=['POST'])
 def shorten_url():
-    data = request.get_json()
-    original_url = data.get("original_url")
+    try:
+        data = request.get_json()
+        original_url = data.get("original_url")
 
-    if not original_url:
-        return jsonify({"error": "Missing original_url"}), 400
+        if not original_url:
+            return jsonify({"error": "Missing original_url"}), 400
 
-    urls = load_urls()
+        urls = load_urls()
 
+<<<<<<< HEAD:function/url_redirector.py
     # Generate a unique short code (for demo purposes, hardcoded to "abc123")
     short_code = "abc123"  # You should generate a real unique code here
     
@@ -40,19 +52,38 @@ def shorten_url():
     short_url = f"https://<your_netlify_subdomain>.netlify.app/{short_code}"
 
     return jsonify({"short_url": short_url})
+=======
+        # Generate a unique short code (for demo purposes, hardcoded to "abc123")
+        short_code = "abc123"  # You should generate a real unique code here
+        
+        # Store the mapping in memory (and save it to the file)
+        urls[short_code] = original_url
+        save_urls(urls)
+
+        short_url = f"http://127.0.0.1:5000/{short_code}"
+
+        return jsonify({"short_url": short_url})
+    except Exception as e:
+        print(f"Error in /shorten route: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+>>>>>>> dc3b782b1b4a7064da1694bf2bec0501a0f0e567:url_redirector.py
 
 # URL Redirect Route (GET)
 @app.route('/<short_code>', methods=['GET'])
 def redirect_url(short_code):
-    urls = load_urls()
+    try:
+        urls = load_urls()
 
-    # Find the original URL from the shortened URL
-    original_url = urls.get(short_code)
+        # Find the original URL from the shortened URL
+        original_url = urls.get(short_code)
 
-    if original_url:
-        return redirect(original_url)
-    else:
-        return "Short URL not found!", 404
+        if original_url:
+            return redirect(original_url)
+        else:
+            return "Short URL not found!", 404
+    except Exception as e:
+        print(f"Error in /{short_code} route: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
 
 # This is necessary for the serverless function to run correctly
 def handler(event, context):
