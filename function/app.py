@@ -76,3 +76,6 @@ def redirect_url(short_code):
 # This is necessary for the serverless function to run correctly
 def handler(event, context):
     return app(event, context)
+
+if __name__ == '__main__':
+    app.run(debug=True)
