@@ -35,9 +35,10 @@ def shorten_url():
 
     urls = load_urls()
 
-    # Generate a unique short code (for demo purposes, hardcoded to "abc123")
-    short_code = "abc123"  # You should generate a real unique code here
-    
+    # Generate a unique short code (For demo purposes, we're using "abc123" for now)
+    # You can implement more advanced short code generation here
+    short_code = "abc123"
+
     # Store the mapping in memory (and save it to the file)
     urls[short_code] = original_url
     save_urls(urls)
