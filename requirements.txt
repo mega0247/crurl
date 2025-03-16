@@ -1,4 +1,4 @@
 flask==2.1.1
-werkzeug==0.15.6
+werkzeug==2.0.3  # Or any latest version compatible with Flask 2.x
 jinja2==2.11.3
 
