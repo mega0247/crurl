@@ -42,7 +42,7 @@ def shorten_url():
     urls[short_code] = original_url
     save_urls(urls)
 
-    short_url = f"https://your-vercel-domain.vercel.app/{short_code}"
+    short_url = f"https://crurl.vercel.app/{short_code}"
 
     return jsonify({"short_url": short_url})
 
