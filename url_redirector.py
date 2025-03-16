@@ -35,15 +35,14 @@ def shorten_url():
 
     urls = load_urls()
 
-    # Generate a unique short code (For demo purposes, we're using "abc123" for now)
-    # You can implement more advanced short code generation here
-    short_code = "abc123"
-
+    # Generate a unique short code (for demo purposes, hardcoded to "abc123")
+    short_code = "abc123"  # You should generate a real unique code here
+    
     # Store the mapping in memory (and save it to the file)
     urls[short_code] = original_url
     save_urls(urls)
 
-    short_url = f"https://crurl.vercel.app/{short_code}"
+    short_url = f"https://{request.host}/{short_code}"
 
     return jsonify({"short_url": short_url})
 
