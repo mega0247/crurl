@@ -1,3 +1,9 @@
 [build]
-  command = "pip install -r requirements.txt && python function/app.py"
-  publish = "public"
+  functions = "function"  # The folder with your Flask app
+  publish = "public"      # The folder for public content (if you have any)
+
+[[redirects]]
+  from = "/shorten"
+  to = "/function/app.py"  # Redirect short URLs to your Flask app
+  status = 200
+  force = true
