@@ -42,8 +42,7 @@ def shorten_url():
     urls[short_code] = original_url
     save_urls(urls)
 
-    # Update the short_url to be accessible from any computer in the network
-    short_url = f"http://0.0.0.0:5000/{short_code}"
+    short_url = f"https://your-vercel-domain.vercel.app/{short_code}"
 
     return jsonify({"short_url": short_url})
 
@@ -61,5 +60,4 @@ def redirect_url(short_code):
         return "Short URL not found!", 404
 
 if __name__ == '__main__':
-    # Bind Flask to 0.0.0.0 to make it available across the network
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True)
