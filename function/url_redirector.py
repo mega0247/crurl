@@ -19,11 +19,6 @@ def save_urls(urls):
     with open(URL_FILE, 'w') as file:
         json.dump(urls, file, indent=4)
 
-# Homepage Route
-@app.route('/')
-def home():
-    return "Welcome to the URL Redirector API!", 200
-
 # URL Shortening Route (POST)
 @app.route('/shorten', methods=['POST'])
 def shorten_url():
@@ -42,8 +37,7 @@ def shorten_url():
     urls[short_code] = original_url
     save_urls(urls)
 
-    # Update the short_url to be accessible from any computer in the network
-    short_url = f"http://0.0.0.0:5000/{short_code}"
+    short_url = f"https://<your_netlify_subdomain>.netlify.app/{short_code}"
 
     return jsonify({"short_url": short_url})
 
@@ -60,6 +54,6 @@ def redirect_url(short_code):
     else:
         return "Short URL not found!", 404
 
-if __name__ == '__main__':
-    # Bind Flask to 0.0.0.0 to make it available across the network
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# This is necessary for the serverless function to run correctly
+def handler(event, context):
+    return app(event, context)

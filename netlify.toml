@@ -1,0 +1,8 @@
+[build]
+  functions = "functions"
+  publish = "public"
+
+[[redirects]]
+  from = "/shorten"
+  to = "/.netlify/functions/url_redirector"
+  status = 200
